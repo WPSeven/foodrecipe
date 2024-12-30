@@ -93,9 +93,9 @@ object FavoriteScreen {
         data object AlphabeticalSort : Event
         data object LessIngredientsSort : Event
         data object ResetSort : Event
-        data class ShowDetails(val id: String) : Event
+        data class ShowDetails(val id: String) : Event // Same should one
         data class DeleteRecipe(val recipe: Recipe) : Event
-        data class GoToDetails(val id:String):Event
+        data class GoToDetails(val id:String):Event // Same should one
     }
 
 }

@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
@@ -37,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -46,6 +48,12 @@ import coil.compose.AsyncImage
 import com.waiphyo.common.navigation.NavigationRoute
 import com.waiphyo.common.utils.UiText
 import kotlinx.coroutines.flow.collectLatest
+
+object RecipeListScreenTestTag {
+    const val SEARCH = "search"
+    const val LAZY_COL = "lazy_col_recipe"
+    const val FLOATING_ACTION_BTN = "fab"
+}
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -79,7 +87,7 @@ fun RecipeListScreen(
         floatingActionButton = {
             FloatingActionButton(onClick = {
                 viewModel.onEvent(RecipeList.Event.FavoriteScreen)
-            }) {
+            }, modifier = Modifier.testTag(RecipeListScreenTestTag.FLOATING_ACTION_BTN)) {
                 Icon(imageVector = Icons.Default.Star, contentDescription =null)
             }
         },
@@ -99,7 +107,7 @@ fun RecipeListScreen(
                 unfocusedContainerColor = Color.Transparent,
                 focusedContainerColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
-            ), modifier = Modifier.fillMaxWidth()
+            ), modifier = Modifier.fillMaxWidth().testTag(RecipeListScreenTestTag.SEARCH)
         )
     }) {
         if (uiState.value.isLoading) {
@@ -125,14 +133,13 @@ fun RecipeListScreen(
         uiState.value.data?.let { list ->
 
             LazyColumn(
-                modifier = Modifier
+                modifier = Modifier.testTag(RecipeListScreenTestTag.LAZY_COL)
                     .padding(it)
                     .fillMaxSize()
             ) {
-
-                items(list) {
+                itemsIndexed(list){index, it ->
                     Card(
-                        modifier = Modifier
+                        modifier = Modifier.testTag(it.strMeal.plus(index))
                             .padding(horizontal = 12.dp, vertical = 4.dp)
                             .clickable { onClick.invoke(it.idMeal) },
                         shape = RoundedCornerShape(12.dp)
